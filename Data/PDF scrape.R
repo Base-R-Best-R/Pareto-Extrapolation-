@@ -1,26 +1,25 @@
 #PDF scraping
 #setwd("~/GitHub/Pareto-Extrapolation-/Data")
 #install.packages("pdftools")
-library(pdftools)
+library(tabulizer)
 library(stringr)
+install.packages("XLConnect")
+library(XLConnect)
 ##############################################################################################################
 # load all pdf's
-txt_tables <- NULL
-y <- paste(2010:2018, "Table.pdf")
+# Unfortunately in 2016 statistics austria updated their design and hence we cannot treat the tables prior and after 2016 equally
+#for tables in between 2010 and 2015 (similar design)
+txt_tables <- list()
+y <- paste(2010:2015, "Table.pdf")
 #
+# options(java.parameters = "-Xmx4g" ) #extend memory for rJava
 for(i in seq.int(length(y))){
-  txt_tables[i] <- pdf_text(y[i])
+  txt_tables[[i]] <- el(extract_tables(y[i], encoding="UTF-8"))
+  xlcFreeMemory() # clear Java machine mem. (java specific bottleneck)
 }
-# First clean one table and then automate:
-cat(txt_tables[1])# first look - need to split twice and probably manuall reassign column names
-test <- txt_tables[1]
-str_count(test, pattern = "Männer\r\n")# split
-# fixed = TRUE, no regex required yet
-test <- unlist(strsplit(test, "Männer\r\n", fixed = T))[1] 
-# worked just fine, now split off the top, cant use strsplit here becasue there is more then one match for insgesamt
-str_count(test, "Insgesamt") # 2 -->
-test <- unlist(regmatches(test, regexpr("Insgesamt", test), invert = TRUE))[2]
-cat(test) # succesfully isolated 
-#
-k <- unlist(strsplit(test, "\r\n", fixed = T))
-###
+# subset
+for(i in seq.int(length(y))){
+  txt_tables[[i]] <- txt_tables[[i]][4:23,]
+}
+View(txt_tables[[3]])
+## WORK IN PROGRES
