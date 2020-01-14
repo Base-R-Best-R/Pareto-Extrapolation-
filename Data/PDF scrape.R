@@ -1,26 +1,26 @@
 #PDF scraping
-setwd("~/VWL/Hauptsemester 4/Economics of Distribution/Pareto Extraploation/PDF/Subset Pages Holding Tables")
-#
-install.packages("pdftools")
-library(dplyr)
+#setwd("~/GitHub/Pareto-Extrapolation-/Data")
+#install.packages("pdftools")
 library(pdftools)
+library(stringr)
 ##############################################################################################################
 # load all pdf's
-txt_tables <- list()
+txt_tables <- NULL
 y <- paste(2010:2018, "Table.pdf")
+#
 for(i in seq.int(length(y))){
-  txt_tables[[i]] <- pdf_text(y[[i]])
+  txt_tables[i] <- pdf_text(y[i])
 }
-txt_tables[[1]]
-gsub(".*Insgesamt .","",txt_tables[[1]])
-strsplit(txt_tables[[1]], "insgesamt\r\n")
-sub("^.*\\insgesamt\r\n","", t1)
-t1 <- gsub(" ", "", txt_tables[[1]], fixed = TRUE)
-strsplit(t1,"insgesamt\r\n")
-?grepl
-grep("0b", t1)
-l <- strsplit(t1, "insgesamt")
-cat(l[[1]][2])
-
-l
-gsub(".*insgesamt\r\n","" ,t1)
+# First clean one table and then automate:
+cat(txt_tables[1])# first look - need to split twice and probably manuall reassign column names
+test <- txt_tables[1]
+str_count(test, pattern = "Männer\r\n")# split
+# fixed = TRUE, no regex required yet
+test <- unlist(strsplit(test, "Männer\r\n", fixed = T))[1] 
+# worked just fine, now split off the top, cant use strsplit here becasue there is more then one match for insgesamt
+str_count(test, "Insgesamt") # 2 -->
+test <- unlist(regmatches(test, regexpr("Insgesamt", test), invert = TRUE))[2]
+cat(test) # succesfully isolated 
+#
+k <- unlist(strsplit(test, "\r\n", fixed = T))
+###
