@@ -38,11 +38,8 @@ for(k in 1:3){
      xlcFreeMemory() # clear Java machine mem. (java specific bottleneck)
  }
 }
-# Even after setting the area manually the table cannot be detected I suspect that they inserted
-# somesort of picturesque file which cannot be detected...
 ############
-# cleaning the obtained datafranes, unfortunately all seperate as they all differ 
-# even within the same design...
+# cleaning the obtained datafranes, unfortunately most of them seperatlely...
 listo[[1]][[1]] <- listo[[1]][[1]][4:23, c(1, 2, 4)]
 # split by " " and remove the value to the right as this corresponds to an individual column
 listo[[1]][[1]][,2] <- sapply(strsplit(listo[[1]][[1]][, 1], " ", fixed = T), function(x){
