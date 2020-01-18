@@ -5,6 +5,8 @@ getwd()
 library(tabulizer)
 library(stringr)
 library(XLConnect)
+library(miniUI)
+library(shiny)
 ##############################################################################################################
 # load all pdf's
 # Unfortunately in 2016 and 2012 statistics austria updated their design and hence we cannot treat the tables equally
@@ -22,9 +24,10 @@ listo <- list(l1 = list(),
 for(k in 1:3){
  for(i in seq.int(length(eval(parse(text = paste0("y",k)))))){
   if(k == 3){
-    t <- "stream"
+    t <- "stream" # used for table that have now line seperations
     n <- F
-    l <- list(c(63, 25, 165.34, 24.2))
+    # locate_areas("2016 Table.pdf", 1), similar for every pdf post 2016
+    l <- list(c(180.53, 71.96, 372.13, 525.15097)) # tabulizer couldn't auto detect
   } else{
     t <- "decide"
     n <- T
@@ -99,7 +102,13 @@ listo[[2]][[4]] <- listo[[2]][[4]][11:30, c(1, 3, 4)]
 listo[[2]][[4]] <- listo[[2]][[4]][, -1]
 # 6th one done
 listf[[6]] <- nameit.num(listo[[2]][[4]])
-##################################################################################################
-# For the remaining 3 years 
-
+######################################
+# luckily scrape result of last design yielded similar enough results to loop the cleaning ops.
+for(i in 1:3){
+  listf[[i + 6]] <- nameit.num(listo[[3]][[i]][1:20, c(4, 5)])
+}
+# name the list
+names(listf) <- paste(2010:2018)
 ## WORK IN PROGRESS
+listf
+
