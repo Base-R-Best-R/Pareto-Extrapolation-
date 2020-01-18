@@ -7,8 +7,7 @@ library(stringr)
 library(XLConnect)
 ##############################################################################################################
 # load all pdf's
-# Unfortunately in 2016 and statistics austria updated their design and hence we cannot treat the tables prior and after 2016 equally
-# for tables in between 2010 and 2015 (similar design)
+# Unfortunately in 2016 and 2012 statistics austria updated their design and hence we cannot treat the tables equally
 p <- "Table.pdf"
 y1 <- paste(2010:2011, p)
 y2 <- paste(2012:2015, p)
@@ -21,7 +20,7 @@ listo <- list(l1 = list(),
 # options(java.parameters = "-Xmx4g" ) #extend memory for rJava
 # the above option change is not required for this size of list, still worth meantioning that larger lists may require a manual memory extension
 for(k in 1:3){
-for(i in seq.int(length(eval(parse(text = paste0("y",k)))))){
+ for(i in seq.int(length(eval(parse(text = paste0("y",k)))))){
   if(k == 3){
     t <- "stream"
     n <- F
@@ -34,7 +33,7 @@ for(i in seq.int(length(eval(parse(text = paste0("y",k)))))){
      listo[[k]][[i]] <- el(extract_tables(eval(parse(text = paste0("y", k, "[", i, "]"))), 
                                               method = t, guess = n, area = l))
      xlcFreeMemory() # clear Java machine mem. (java specific bottleneck)
-}
+ }
 }
 # Even after setting the area manually the table cannot be detected I suspect that they inserted
 # somesort of picturesque file which cannot be detected...
@@ -101,5 +100,6 @@ listo[[2]][[4]] <- listo[[2]][[4]][, -1]
 # 6th one done
 listf[[6]] <- nameit.num(listo[[2]][[4]])
 ##################################################################################################
-# 
-## WORK IN PROGRES
+# For the remaining 3 years 
+
+## WORK IN PROGRESS
