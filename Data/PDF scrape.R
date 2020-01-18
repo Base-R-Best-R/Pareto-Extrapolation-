@@ -1,7 +1,7 @@
 # PDF scraping
 # rm(list = ls())
 getwd()
-# setwd("~/GitHub/Pareto-Extrapolation-/Data")
+# setwd("~/GitHub/Pareto-Extrapolation-/Data/PDF Tables")
 library(tabulizer)
 library(stringr)
 library(XLConnect)
@@ -110,5 +110,5 @@ for(i in 1:3){
 # name the list
 names(listf) <- paste(2010:2018)
 ## WORK IN PROGRESS
-listf
+
 
