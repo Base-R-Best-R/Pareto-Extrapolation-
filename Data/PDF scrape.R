@@ -106,6 +106,10 @@ for(i in 1:3){
 }
 # name the list
 names(listf) <- paste(2010:2018)
-## WORK IN PROGRESS
-
-
+# write to csv 
+path <- "C:/Users/blasc/OneDrive/Documents/GitHub/Pareto-Extrapolation-/Data/CSV/"
+csv.filepaths <- paste0(path, names(listf), " ","cleaned.csv")
+Map(write.csv, listf, csv.filepaths)
+# save as .rds file
+setwd("C:/Users/blasc/OneDrive/Documents/GitHub/Pareto-Extrapolation-/Data")
+saveRDS(listf, "CleanedTablesList.rds")
