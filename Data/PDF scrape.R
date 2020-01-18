@@ -36,7 +36,7 @@ for(i in seq.int(length(eval(parse(text = paste0("y",k)))))){
      xlcFreeMemory() # clear Java machine mem. (java specific bottleneck)
 }
 }
-# Even after setting the area manually the table cannot be detected i suspect that they inserted
+# Even after setting the area manually the table cannot be detected I suspect that they inserted
 # somesort of picturesque file which cannot be detected...
 ############
 # cleaning the obtained datafranes, unfortunately all seperate as they all differ 
@@ -50,26 +50,56 @@ listo[[1]][[1]][,2] <- sapply(strsplit(listo[[1]][[1]][, 1], " ", fixed = T), fu
 rownames <- sapply(strsplit(listo[[1]][[1]][, 1], " ", fixed = T), function(x){
   paste(x[-c(length(x))], collapse = " ")
 })
+#colnames
+col <- c("Steuerpflichtige insg.", "Unselbstständige Erwerbstätige")
 # switch column to rownames
 listo[[1]][[1]] <- listo[[1]][[1]][, -1] 
+#  little function that shortens code since this will be repeated for every df
+nameit.num <- function(x){
+  x <- gsub("\\.|\\,", "", x)
+  x <- apply(x, 2, as.numeric)
+  x <- as.data.frame(x)
+  rownames(x) <- rownames
+  colnames(x) <- col
+  x
+}
 #
-colnames(listo[[1]][[1]]) <- c("Steuerpflichtige insg.", "Unselbstständige Erwerbstätige")
-listo[[1]][[1]] <- gsub("\\.|\\,", "", listo[[1]][[1]])
-#
-listo[[1]][[1]] <- apply(listo[[1]][[1]], 2, as.numeric)
-row.names(listo[[1]][[1]]) <- rownames
-View(listo[[1]][[1]]) # first one done 
+# first one done 
+#list for finished df
+listf <- list()
+listf[[1]] <- nameit.num(listo[[1]][[1]]) 
 ######################################
 listo[[1]][[2]] <- listo[[1]][[2]][4:23, c(1, 4)]
 #
+listo[[1]][[2]][, 1] <- sapply(strsplit(listo[[1]][[2]][, 1], " ", fixed = T), function(x){
+  x[length(x)]
+})
+# second one done
+listf[[2]] <- nameit.num(listo[[1]][[2]])
+######################################
 listo[[2]][[1]] <- listo[[2]][[1]][10:29, c(1, 3, 4)]
+#
+listo[[2]][[1]] <- listo[[2]][[1]][, -1]
+# third one done
+listf[[3]] <- nameit.num(listo[[2]][[1]])
+######################################
 listo[[2]][[2]] <- listo[[2]][[2]][9:28, c(1, 3, 4)]
+#
+listo[[2]][[2]] <- listo[[2]][[2]][, -1]
+# 4th one done 
+listf[[4]] <- nameit.num(listo[[2]][[2]])
+######################################
 listo[[2]][[3]] <- listo[[2]][[3]][11:30, c(1, 3, 4)]
+#
+listo[[2]][[3]] <- listo[[2]][[3]][, -1]
+# 5th one done
+listf[[5]] <- nameit.num(listo[[2]][[3]])
+######################################
 listo[[2]][[4]] <- listo[[2]][[4]][11:30, c(1, 3, 4)]
-
-View(listo[[1]][[2]])
-listo[[1]][[1]][4:23, c("V1", "V2", "V4")]
-?extract_tables()
-
-
+#
+listo[[2]][[4]] <- listo[[2]][[4]][, -1]
+# 6th one done
+listf[[6]] <- nameit.num(listo[[2]][[4]])
+##################################################################################################
+# 
 ## WORK IN PROGRES
