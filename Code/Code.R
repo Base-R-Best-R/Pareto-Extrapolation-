@@ -12,7 +12,7 @@ library(stringr)
 Lim <- as.numeric(str_extract(x, "\\ [^\\ ]*$"))
 
 # append p = fraction, f = cummulative sum of p (required for the cdf), lim = limits for the ecdf step function
-# f amount of peeple bellow this threshold
+# f amount of people bellow this threshold
 # p people (relative) within the bracket, note that here we assume a uniform distribution within each bracket
 lst <- lapply(lst, function(x){
   p <- x[,1] / x[20, 1]
@@ -46,7 +46,8 @@ legend(165, 0.9, legend = c(paste(2010:2018), expression(paste("Exp: ", lambda, 
 expF <- function(x) 1 - exp(-0.04*x)
 # draw curve onto plot 
 curve(expF, 0, 200, add = T, type = "l", pch = 19, lty = 2)
-####################################################################################################
+################################################################################################################################
+
 
 
 
