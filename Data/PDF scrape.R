@@ -107,32 +107,38 @@ for(i in 1:3){
 ###################################################################################################################################################
 #Unfortunately scraped table which was missing a row, therefore I need to scrape another column for another table 
 getwd()
-#  setwd("~/GitHub/Pareto-Extrapolation-/Data/PDF Tables/2nd")
-locate_areas("T2010.pdf", 1)
-a <- list(c(215.3206, 195.3059, 448.8524, 246.7258))
+# setwd("~/GitHub/Pareto-Extrapolation-/Data/PDF Tables/2nd")
+a <- list()
 ext <- list()
 g <- paste0("T", 2010:2018, ".pdf")
-#
+# locate areas
+a[[1]] <- list(c(215.3206, 195.3059, 448.8524, 246.7258))
+a[[2]] <- list(c(206.7506, 197.4484, 453.1374, 246.7258)) 
+
+# example
 ext[[1]] <- el(extract_tables(g[1], area = a))
-
-ext <- lapply(g, function(x){
-  el(extract_tables(x, area = a))
+# loop
+for(i in seq.int(length(g))){
+  if(i < 6){
+  ext[[i]] <- el(extract_tables(g[i], area = a[[1]]))
+  xlcFreeMemory()
+  }
+  else{
+    ext[[i]] <- el(extract_tables(g[i], area = a[[2]]))
+    xlcFreeMemory()
+  }
+}
+# remove unwanted intel on last 4 cols
+ext[6:9] <- lapply(ext[6:9], function(x){
+  x <- x[1:20]
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#
+ext <- lapply(ext, as.character)
+#remove dots and convert to numeric
+ext <- lapply(ext,function(x){
+  x <- gsub("\\.*", "", x)
+  x <- as.numeric(x)
+})
 # name the list
 names(listf) <- paste(2010:2018)
 # write to csv 
@@ -142,7 +148,7 @@ Map(write.csv, listf, csv.filepaths)
 # save as .rds file
 setwd("C:/Users/blasc/OneDrive/Documents/GitHub/Pareto-Extrapolation-/Data")
 saveRDS(listf, "CleanedTablesList.rds")
-
+saveRDS(ext, "IncGroup.rds")
 
 
 
