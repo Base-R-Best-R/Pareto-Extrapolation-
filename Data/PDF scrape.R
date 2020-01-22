@@ -104,6 +104,35 @@ listf[[6]] <- nameit.num(listo[[2]][[4]])
 for(i in 1:3){
   listf[[i + 6]] <- nameit.num(listo[[3]][[i]][1:20, c(4, 5)])
 }
+###################################################################################################################################################
+#Unfortunately scraped table which was missing a row, therefore I need to scrape another column for another table 
+getwd()
+#  setwd("~/GitHub/Pareto-Extrapolation-/Data/PDF Tables/2nd")
+locate_areas("T2010.pdf", 1)
+a <- list(c(215.3206, 195.3059, 448.8524, 246.7258))
+ext <- list()
+g <- paste0("T", 2010:2018, ".pdf")
+#
+ext[[1]] <- el(extract_tables(g[1], area = a))
+
+ext <- lapply(g, function(x){
+  el(extract_tables(x, area = a))
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # name the list
 names(listf) <- paste(2010:2018)
 # write to csv 
@@ -113,3 +142,10 @@ Map(write.csv, listf, csv.filepaths)
 # save as .rds file
 setwd("C:/Users/blasc/OneDrive/Documents/GitHub/Pareto-Extrapolation-/Data")
 saveRDS(listf, "CleanedTablesList.rds")
+
+
+
+
+
+
+
