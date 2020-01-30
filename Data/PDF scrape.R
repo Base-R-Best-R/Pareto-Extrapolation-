@@ -114,7 +114,7 @@ g <- paste0("T", 2010:2018, ".pdf")
 # locate areas
 a[[1]] <- list(c(215.3206, 195.3059, 448.8524, 246.7258))
 a[[2]] <- list(c(206.7506, 197.4484, 453.1374, 246.7258)) 
-
+??locate_areas
 # example
 ext[[1]] <- el(extract_tables(g[1], area = a))
 # loop
