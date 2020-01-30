@@ -1,7 +1,7 @@
 # Income inequality in austria, based on data from statistics austria between 2010 and 2018
 # rm(list = ls())
 getwd()
- setwd("~/GitHub/Pareto-Extrapolation-/Data")
+# setwd("~/GitHub/Pareto-Extrapolation-/Data")
 # CleanedTablesList.rds
 # install.packages("spatstat")
 library(spatstat)
@@ -35,16 +35,6 @@ sum(s2) == 9 # TRUE
 # fp amount of people bellow this threshold
 # pp people (relative) within the bracket
 #
-# Weighted mean above bracket:
-wm.above <- function(x){
-  a <- NULL
-  for(j in 1:18){
-   i <- which(x[, "Lim"] == Lim[j]) + 1 # convert lim to index
-   a[j] <- weighted.mean(x[i:19, 4], x[i:19, 1]) # weighted by ppl within bracket 
-  }
-  c(a, NA, NA)
-}
-#
 lst <- lapply(lst, function(x){
   pp <- x[,1] / x[20, 1] # percentage of people within bracket  
   fp <- cumsum(pp)        
@@ -53,7 +43,16 @@ lst <- lapply(lst, function(x){
   ShareIncf <- cumsum(ShareInc)
   cbind(x, AveInc, ShareInc, ShareIncf, 1 - ShareIncf, Lim, pp, fp, 1 - fp)
 })
-
+# Weighted mean above bracket:
+wm.above <- function(x){
+  a <- NULL
+  for(j in 1:18){
+    i <- which(x[, "Lim"] == Lim[j]) + 1 # convert lim to index
+    a[j] <- weighted.mean(x[i:19, 4], x[i:19, 1] / sum(x[i:19, 1])) # weighted by ppl within bracket 
+  }
+  c(a, NA, NA)
+}
+#
 # forgot ave income above
 lst <- lapply(lst, function(x){
   AveIncAbove <- wm.above(x)
@@ -64,35 +63,6 @@ lst[[1]]
 for(i in 1:9){
   lst[[i]][20, which(lst[[i]][20,] %in% c(-1, 2))] <- NA
 }
-View(lst[[1]])
-#########################################################################################################################
-# weighetd ecdf list of weighted ecdfs: 
-lwecdf <- list()
-lwecdf <- lapply(lst, function(x){
-  ewcdf(x$Lim, x$p)
-})
-## plot every wecdf in same plot different colours
-col <- c("2010" = "blue", "2011" = "brown", "2012" = "green", "2013" = "darkred", "2014" = "deeppink", "2015" = "darkorange",
-         "2016" = "blueviolet", "2017" = "burlywood", "2018" = "aquamarine")
-#
-col1 <- unname(col)
-# time to plot
-for( i in seq.int(length(col))){
-  if(i == 1){
-    plot(lwecdf[[i]], col = col[i], main = "Empirical Weighted Cummulative Distribution Function", 
-         xlab = "Income in 1000 ???")
-  }
-  else{
-    plot(lwecdf[[i]], col = col[i], add = TRUE)
-  }
-}
-# 
-legend(130, 0.9, legend = c(paste(2010:2018), expression(paste("Exp: ", lambda, "= 0.05"))), fill = c(col1, "black"),
-       box.lty = 0)
-# add exponentialfunction
-expF <- function(x) 1 - exp(-0.05*x)
-# draw curve onto plot 
-curve(expF, 0, 200, add = T, type = "l", pch = 19, lty = 2)
 ##################################################################################################################
 # alphas for every bracket besides the top code 
 # note that the exponential distribution asssumption is not valid for lower income brackets
@@ -158,7 +128,9 @@ sh <- c(0.1, 0.05, 0.01)
 for(i in seq.int(length(sh))){
 quanta[[i]] <- sapply(lst, top_income_share, p = sh[i])
 }
-
+quanta
+#
+lst
 # Plot Income Shares 
 ny <- as.numeric(names(quanta[[1]]))
 plot(ny, quanta[[1]], type = "o", pch = 1, lty = 0, ylim = c(0,0.45), ylab = "Income Share",
@@ -166,13 +138,13 @@ plot(ny, quanta[[1]], type = "o", pch = 1, lty = 0, ylim = c(0,0.45), ylab = "In
 points(ny, quanta[[2]], type ="o", pch = 2, lty = 0, col = "blue")
 points(ny, quanta[[3]], type = "o", pch = 3, lty = 0, col = "red")
 legend("topleft", legend = c("Top 10%", "Top 5%", "Top 1%"), fill = c("darkgreen", "blue", "red"))
+#
 # Plot Income Shares relative to basis year 2010
-
 quantar <- lapply(quanta, function(x){
   x / x[1] * 100
 })
 quantar
-### WORK IN PROGRESS
+# Base Year 2010
 plot(ny, quantar[[1]], type = "o", pch = 1, lty = 0, ylim = c(90,110), ylab = "Income Share",
      xlab = "Years", main = "Income Shares relative to 2010", col = "darkgreen")
 points(ny, quantar[[2]], type ="o", pch = 2, lty = 0, col = "blue")
@@ -180,5 +152,3 @@ points(ny, quantar[[3]], type = "o", pch = 3, lty = 0, col = "red")
 legend("topleft", legend = c("Top 10%", "Top 5%", "Top 1%"), fill = c("darkgreen", "blue", "red"))
 abline(h = 100)
 
-
-?sin
